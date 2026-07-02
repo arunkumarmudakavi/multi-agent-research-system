@@ -11,6 +11,7 @@ class Source(BaseModel):
     title: str
     url: str
     content: str
+    score: float | None = None
 
 
 class Finding(BaseModel):
