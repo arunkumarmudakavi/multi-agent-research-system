@@ -29,7 +29,7 @@ class ResearchAgent:
                 summary = self.research_client.summarize(topic=topic, sources=sources)
                 # end = time.time()
 
-                # print(f"Time taken {end - start:.2f} seconds")
+                # print(f"Research summarize Time taken {end - start:.2f} seconds")
 
                 findings[topic] = Finding(topic=topic, content=summary)
         except Exception as e:
