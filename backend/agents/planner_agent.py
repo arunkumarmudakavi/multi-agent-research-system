@@ -2,7 +2,8 @@ import json
 import time
 
 from backend.agents.state import ResearchState, Task
-from backend.llm.prompts.planner_prompt import PLANNER_PROMPT
+from backend.prompts.planner_prompt import PLANNER_PROMPT
+from backend.utils.llm_response_parser import LLMResponseParser
 
 
 class PlannerAgent:
@@ -15,15 +16,17 @@ class PlannerAgent:
 
         prompt = PLANNER_PROMPT.format(query=state.query)
 
-        # start = time.time()
+        start = time.time()
         response = self.llm_client.generate(prompt)
-        # end = time.time()
+        end = time.time()
 
-        # print(f"Time taken {end - start:.2f} seconds")
+        print(f"Planer Time taken {end - start:.2f} seconds")
         # print("res: ", response)
 
         try:
-            topics = json.loads(response)
+            # topics = json.loads(response)
+            topics = LLMResponseParser.parse(response)
+            # print("Parsed topics:", topics)
         except json.JSONDecodeError:
             state.errors.append("Failed to parse planner response.")
             return state
@@ -35,6 +38,7 @@ class PlannerAgent:
                 Task(topic=topic, description=f"Research {topic} of {state.query}")
             )
 
+        # print("Tasks: ", tasks)
         state.tasks = tasks
         state.status = "PLANNING_COMPLETED"
 
